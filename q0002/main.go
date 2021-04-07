@@ -1,14 +1,42 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"time"
+
 	"github.com/halfrost/LeetCode-Go/structures"
 )
 
 // ListNode define
 type ListNode = structures.ListNode
 
+func x(ctx context.Context) {
+	fmt.Println(ctx.Deadline())
+	i := 0
+
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				fmt.Println("done")
+				return
+			default:
+				i++
+				fmt.Println(i)
+				time.Sleep(time.Second)
+			}
+		}
+	}()
+}
 func main() {
+
+	c, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	go x(c)
+
+	time.Sleep(5 * time.Second)
+	return
 
 	i := 10000
 	j := 80009
